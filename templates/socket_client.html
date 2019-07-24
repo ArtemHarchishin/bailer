@@ -1,0 +1,38 @@
+<html>
+    <head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        document.addEventListener("DOMContentLoaded", function(event) { 
+            logger = document.createElement('p');
+            document.body.appendChild(logger);
+
+            
+            socket = io();
+
+            log("Start WebSocket");
+
+            socket.on('connect', function() {
+                log("WebSocket connected");
+                socket.emit('notify_watering', {notify: true});
+            });
+
+            socket.on('need_watering', function(data) {
+                if (!data) {
+                    log("Nothing need watering.");
+                } else {
+                    log(data);
+                }
+            });
+        });
+
+        function log(message) {
+            logger.innerText += message + "\n"
+            console.log(message)
+        }
+        
+    </script>
+    </head>
+<body>
+<p></p>
+</body>
+</html>
