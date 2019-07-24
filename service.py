@@ -8,15 +8,22 @@ import functools
 app = flask.Flask(__name__)
 socketio = flask_socketio.SocketIO(app)
 
+
 @app.route("/bailer/socket", methods=['GET'])
 def socket_client():
     return flask.render_template('socket_client.html')
 
+
 @socketio.on('notify_watering')
 def handle_notify_watering(data):
+    bailer.init_notice()
+    bailer.add_notify_callback(start_notify_watering)
+
+
+def start_notify_watering():
     s = need_watering_list()
-    if s:
-        socketio.emit('need_watering', s, broadcast=True)
+    socketio.emit('need_watering', s, broadcast=True)
+
 
 @app.route("/bailer/need", methods=['GET'])
 def need_watering_list():

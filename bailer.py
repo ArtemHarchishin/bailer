@@ -6,13 +6,14 @@ import threading
 Storage = collections.namedtuple('Storage', 'list, by_id, by_name')
 Config = collections.namedtuple('Config', 'notice_interval')
 
+
 class FlowerEntry(object):
     def __init__(self, id, name, watering_interval, last_watering):
         self.id = id
         self.name = name
         self.watering_interval = watering_interval
         self.last_watering = last_watering
-    
+
     def need_watering(self, cur_time=None):
         if cur_time is None:
             cur_time = time.time()
@@ -29,11 +30,11 @@ class FlowerEntry(object):
         return self.to_string()
 
 
-
 storage = None
 callbacks = None
 notice_process = None
-config = Config(3) # TODO move to file or something else
+config = Config(3)  # TODO move to file or something else
+
 
 def init_notice(interval=None):
     global config
@@ -65,12 +66,14 @@ def add_notify_callback(cb):
     else:
         raise Exception(F"Callback incorrect - {cb}")
 
+
 def remove_notify_callback(cb):
     callbacks.remove(cb)
 
+
 def notify():
     l = need_watering_list()
-    
+
     need_call = len(l) > 0
 
     if need_call:
@@ -81,7 +84,7 @@ def notify():
                 cb()
 
     threading.Timer(config.notice_interval, notify).start()
-        
+
 
 def create_flower_entry(name, watering_interval):
     flower_id = time.time()
@@ -107,7 +110,7 @@ def add_flower(name, watering_interval):
 
 def get_all_flowers():
     return storage.list
-    
+
 
 def remove_flower(name):
     flowers = storage.by_name[name]
@@ -125,7 +128,7 @@ def water_flower(name):
     if len(flowers):
         cur_time = time.time()
         for flower in flowers:
-            if flower.need_watering(cur_time):    
+            if flower.need_watering(cur_time):
                 flower.last_watering = cur_time
                 watered = True
                 break

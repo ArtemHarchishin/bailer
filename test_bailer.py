@@ -2,8 +2,10 @@ import bailer
 import time
 import pytest
 
+
 def setup_function(function):
     bailer.init_storage()
+
 
 def assert_list(l, amount):
     assert isinstance(l, list)
@@ -14,8 +16,8 @@ def test_flower_entry():
     # Given
     flower_name = "foo"
     watering_interval = 1000
-    
-    # When 
+
+    # When
     entry = bailer.create_flower_entry(flower_name, watering_interval)
 
     # Then
@@ -23,34 +25,35 @@ def test_flower_entry():
 
 # ADD ===============================================================
 
+
 def test_add_flower():
     # Given
     flower_name = "foo"
     watering_interval = 1000
-    
-    # When 
+
+    # When
     bailer.add_flower(flower_name, watering_interval)
 
     # Then
     flowers = bailer.get_all_flowers()
     assert_list(flowers, 1)
 
-    # When 
+    # When
     watering_interval = "1000"
     bailer.add_flower(flower_name, watering_interval)
 
     # Then
     flowers = bailer.get_all_flowers()
     assert_list(flowers, 2)
-    
+
 
 def test_add_flower_with_empty_name():
     # Given
     flower_name = None
     watering_interval = 1000
-    
+
     # When
-    with pytest.raises(Exception, match="Flower's name can't be empty."): 
+    with pytest.raises(Exception, match="Flower's name can't be empty."):
         bailer.add_flower(flower_name, watering_interval)
 
     # Then
@@ -61,9 +64,9 @@ def test_add_flower_with_negative_interval():
     # Given
     flower_name = "None"
     watering_interval = -1000
-    
+
     # When
-    with pytest.raises(Exception, match="Watering interval can't be negative or zero."): 
+    with pytest.raises(Exception, match="Watering interval can't be negative or zero."):
         bailer.add_flower(flower_name, watering_interval)
 
     # Then
@@ -74,9 +77,9 @@ def test_add_flower_with_zero_interval():
     # Given
     flower_name = "None"
     watering_interval = 0
-    
+
     # When
-    with pytest.raises(Exception, match="Watering interval can't be negative or zero."): 
+    with pytest.raises(Exception, match="Watering interval can't be negative or zero."):
         bailer.add_flower(flower_name, watering_interval)
 
     # Then
@@ -89,10 +92,10 @@ def test_remove_not_exists_flower():
     # Given
     flower_name = "tree"
 
-    # When 
+    # When
     removed = bailer.remove_flower(flower_name)
 
-    # Then 
+    # Then
     assert not removed
     flowers = bailer.get_all_flowers()
     assert_list(flowers, 0)
@@ -103,17 +106,17 @@ def test_remove_exists_flower():
     flower_name = "tree"
     watering_interval = 1000
 
-    # When 
+    # When
     bailer.add_flower(flower_name, watering_interval)
 
-    # Then 
+    # Then
     flowers = bailer.get_all_flowers()
     assert_list(flowers, 1)
 
-    # When 
+    # When
     removed = bailer.remove_flower(flower_name)
 
-    # Then 
+    # Then
     assert removed
     flowers = bailer.get_all_flowers()
     assert_list(flowers, 0)
@@ -127,11 +130,11 @@ def test_water_flower_watered():
     watering_interval = 1
     bailer.add_flower(flower_name, watering_interval)
 
-    # When 
+    # When
     time.sleep(2)
     watered = bailer.water_flower(flower_name)
 
-    # Then 
+    # Then
     assert watered
     assert_list(bailer.need_watering_list(), 0)
 
@@ -142,10 +145,10 @@ def test_water_flower_not_watered():
     watering_interval = 1000
     bailer.add_flower(flower_name, watering_interval)
 
-    # When 
+    # When
     watered = bailer.water_flower(flower_name)
 
-    # Then 
+    # Then
     assert not watered
     assert_list(bailer.need_watering_list(), 0)
 
@@ -164,11 +167,11 @@ def test_water_flower_many():
     watering_interval = 1
     bailer.add_flower(big_tree, watering_interval)
 
-    # When 
+    # When
     time.sleep(2)
     watered = bailer.water_flower(big_tree)
 
-    # Then 
+    # Then
     assert watered
     l = bailer.need_watering_list()
     assert_list(l, 0)
@@ -182,10 +185,10 @@ def test_need_watering_one():
     watering_interval = 1
     bailer.add_flower(flower_name, watering_interval)
 
-    # When 
+    # When
     time.sleep(2)
 
-    # Then 
+    # Then
     assert_list(bailer.need_watering_list(), 1)
 
 
@@ -195,16 +198,16 @@ def test_need_watering_zero():
     watering_interval = 1
     bailer.add_flower(flower_name, watering_interval)
 
-    # When 
+    # When
     time.sleep(2)
 
-    # Then 
+    # Then
     assert_list(bailer.need_watering_list(), 1)
 
-    # When 
+    # When
     watered = bailer.water_flower(flower_name)
 
-    # Then 
+    # Then
     assert watered
     assert_list(bailer.need_watering_list(), 0)
 
@@ -223,10 +226,10 @@ def test_need_watering_many():
     watering_interval = 1
     bailer.add_flower(big_tree, watering_interval)
 
-    # When 
+    # When
     time.sleep(2)
 
-    # Then 
+    # Then
     assert_list(bailer.need_watering_list(), 3)
 
 
@@ -238,13 +241,13 @@ def test_notify_callback_not_func():
 
     small_tree = "small_tree"
     watering_interval = 3
-    bailer.add_flower(small_tree, watering_interval)    
+    bailer.add_flower(small_tree, watering_interval)
 
     # When
-    with pytest.raises(Exception, match="Callback incorrect - _not_func"): 
-        bailer.add_notify_callback("_not_func") 
+    with pytest.raises(Exception, match="Callback incorrect - _not_func"):
+        bailer.add_notify_callback("_not_func")
 
-    # Then 
+    # Then
     # Expected exception
 
 
@@ -265,14 +268,14 @@ async def test_notify():
 
     small_tree = "small_tree"
     watering_interval = 3
-    bailer.add_flower(small_tree, watering_interval)    
+    bailer.add_flower(small_tree, watering_interval)
     big_tree = "big_tree"
     watering_interval = 1000
     bailer.add_flower(big_tree, watering_interval)
 
     # When
-    bailer.add_notify_callback(callback_1) 
-    bailer.add_notify_callback(callback_2) 
+    bailer.add_notify_callback(callback_1)
+    bailer.add_notify_callback(callback_2)
 
-    # Then 
+    # Then
     time.sleep(100)
