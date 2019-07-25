@@ -11,6 +11,8 @@ STORAGE_FILENAME = "entries.txt"
 def setup_function(function):
     global storage, flower_entry
 
+    with open(STORAGE_FILENAME, 'w') as f:
+        pass
     storage = FileStorage(STORAGE_FILENAME)
     flower_entry = FlowerEntry(1, "tree", 1, 1)
 
@@ -26,27 +28,15 @@ def assert_is_entry_in_storage(storage, flower_entry, amount, exists):
 
 # File Storage ==============================================================
 
-def test_storage_property():
-    # Given
-    another_storage = FileStorage(STORAGE_FILENAME)
-
-    # When
-    storage.list.append(flower_entry)
-    storage.by_id[flower_entry.id] = flower_entry
-    storage.by_name[flower_entry.name].append(flower_entry)
-    
-    # Then
-    assert_is_entry_in_storage(storage, flower_entry, amount=1, exists=True)
-    assert_is_entry_in_storage(another_storage, flower_entry, amount=1, exists=True)
-
-
 def test_storage_add_entry():
     # Given
-    another_storage = FileStorage(STORAGE_FILENAME)
+    
 
     # When
     storage.add_entry(flower_entry)
     
+    another_storage = FileStorage(STORAGE_FILENAME)
+
     # Then
     assert_is_entry_in_storage(storage, flower_entry, amount=1, exists=True)
     assert_is_entry_in_storage(another_storage, flower_entry, amount=1, exists=True)
@@ -106,3 +96,17 @@ def test_storage_delete_entry_by_name_false():
     assert not deleted
     assert_is_entry_in_storage(storage, flower_entry, amount=0, exists=False)
     assert_is_entry_in_storage(another_storage, flower_entry, amount=0, exists=False)
+
+def test_storage_add_many_entry():
+    # Given
+    
+
+    # When
+    storage.add_entry(flower_entry)
+    storage.add_entry(flower_entry)
+    storage.add_entry(flower_entry)
+    another_storage = FileStorage(STORAGE_FILENAME)
+    
+    # Then
+    assert_is_entry_in_storage(storage, flower_entry, amount=3, exists=True)
+    assert_is_entry_in_storage(another_storage, flower_entry, amount=3, exists=True)

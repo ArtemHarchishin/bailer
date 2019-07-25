@@ -80,9 +80,7 @@ def add_flower(name, watering_interval):
 
     entry = create_flower_entry(name, watering_interval)
 
-    storage.list.append(entry)
-    storage.by_id[entry.id] = entry
-    storage.by_name[entry.name].append(entry)
+    storage.add_entry(entry)
 
 
 def get_all_flowers():
@@ -90,19 +88,13 @@ def get_all_flowers():
 
 
 def remove_flower(name):
-    flowers = storage.by_name[name]
-    if flowers:
-        flower = flowers.pop()
-        storage.list.remove(flower)
-        del storage.by_id[flower.id]
-        return True
-    return False
+    return storage.delete_entry_by_name(name)
 
 
 def water_flower(name):
     watered = False
     flowers = storage.by_name[name]
-    if len(flowers):
+    if flowers:
         cur_time = time.time()
         for flower in flowers:
             if flower.need_watering(cur_time):

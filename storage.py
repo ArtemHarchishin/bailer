@@ -1,6 +1,7 @@
 from collections import defaultdict
 import functools
 import os
+from flower_entry import create_from_string
 
 class Storage(object):
     def __init__(self, l=None, by_id=None, by_name=None):
@@ -55,32 +56,44 @@ class Storage(object):
 
 class FileStorage(Storage):
     def __init__(self, filename):
+        Storage.__init__(self)
         self._filename = filename
-        Storage.__init__(self, *self._read())
+        self._read()
 
     def _read(self):
         if not os.path.exists(self._filename):
             with open(self._filename, 'w') as f:
                 pass
-                
+
+        s = ""
+
         with open(self._filename, 'r') as f:
-            print(f.readlines())
-        return [], {}, defaultdict(list)
+            s = f.read()
+            
+        ss = s.split(";")
+
+        for s in ss:
+            if s:
+                entry = create_from_string(s)
+                self.add_entry(entry)
     
     def _flush(self):
         with open(self._filename, 'w') as f:
             s = functools.reduce(lambda acc, item: acc + str(item), self._list, "")
             f.write(s)
     
-    def delete_entry(self, entry):
-        Storage.delete_entry(self, entry)
-        self._flush()
-
-    def delete_entry_by_name(self, name):
-        Storage.delete_entry_by_name(self, name)
-        self._flush()
-
     def add_entry(self, entry):
         Storage.add_entry(self, entry)
         self._flush()
+
+    def delete_entry(self, entry):
+        deleted = Storage.delete_entry(self, entry)
+        self._flush()
+        return deleted
+
+    def delete_entry_by_name(self, name):
+        deleted = Storage.delete_entry_by_name(self, name)
+        self._flush()
+        return deleted
+
         

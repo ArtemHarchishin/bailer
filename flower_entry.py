@@ -1,5 +1,9 @@
 import time
 
+def create_from_string(s):
+    id, name, watering_interval, last_watering = s.split(",")
+    return FlowerEntry(float(id), name, float(watering_interval), float(last_watering))
+
 class FlowerEntry(object):
     def __init__(self, id, name, watering_interval, last_watering):
         self.id = id
@@ -14,7 +18,7 @@ class FlowerEntry(object):
         return cur_time > next_watering
 
     def to_string(self):
-        return F"({self.name}, interval: {self.watering_interval}, last: {self.last_watering})"
+        return F"{self.id},{self.name},{self.watering_interval},{self.last_watering};"
 
     def __repr__(self):
         return self.to_string()
