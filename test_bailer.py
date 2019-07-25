@@ -278,4 +278,4 @@ async def test_notify():
     bailer.add_notify_callback(callback_2)
 
     # Then
-    time.sleep(100)
+    time.sleep(5)
