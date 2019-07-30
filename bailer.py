@@ -82,6 +82,8 @@ def add_flower(name, watering_interval):
 
     storage.add_entry(entry)
 
+    return True
+
 
 def get_all_flowers():
     return storage.list
@@ -101,6 +103,18 @@ def water_flower(name):
                 flower.last_watering = cur_time
                 watered = True
                 break
+    return watered
+
+
+def water_flower_force(name):
+    watered = False
+    flowers = storage.by_name[name]
+    if flowers:
+        cur_time = time.time()
+        for flower in flowers:
+            flower.last_watering = cur_time
+            watered = True
+            break
     return watered
 
 
